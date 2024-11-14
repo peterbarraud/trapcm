@@ -1,0 +1,59 @@
+{
+    "db":
+    {
+        "localhost":
+        {
+            "host":"localhost",
+            "user":"root",
+            "password":"",
+            "database":"pcm"
+        
+        },
+        "peterbdotin":
+        {
+            "host":"assent.herosite.pro",
+            "user":"hxohient_pokerj",
+            "password":"Pokerj#07",
+            "database":"hxohient_pcmquestions"
+        
+        },
+        "stagepeterbdotin":
+        {
+            "host":"assent.herosite.pro",
+            "user":"hxohient_pokerj",
+            "password":"Pokerj#07",
+            "database":"hxohient_testpcmquestions"
+        
+        }
+    },
+    "ftp":
+    {
+        "jee":
+        {
+            "server":"ftp.peterb.in",
+            "username":"myftp@peterb.in",
+            "pwd":"Pokerj#07"
+        },
+        "stage":
+        {
+            "server":"ftp.peterb.in",
+            "username":"myftp@pcmstage.peterb.in",
+            "pwd":"Pokerj#07"
+        },
+        "cbse":
+        {
+            "server":"ftp.peterb.in",
+            "username":"myftp@cbse.peterb.in",
+            "pwd":"Pokerj#07"
+        }
+    },
+    "restapi":
+    {
+        "local":"http://localhost:8089/services/ftp.rest.api.php/",
+        "stage":"https://pcmstage.peterb.in/services/ftp.rest.api.php/",
+        "jee":"http://pcm.peterb.in/services/ftp.rest.api.php/",
+        "cbse":"http://cbse.peterb.in/services/ftp.rest.api.php/"
+    }
+}
+
+
