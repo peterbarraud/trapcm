@@ -5,10 +5,12 @@ import flet as ft
 # from flet_core.types import AnimationValue, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue
 from PIL import ImageGrab, Image
 from os.path import isfile
+from os import listdir
 import cv2
 from re import sub as resub, findall, split as resplit, error as reerror, search as research
 import collections
 from urllib.parse import unquote
+from glob import glob
 
 from libs.restapi import RestApi
 from libs.clipboardtext import getClipboardData, setClipboardData
@@ -89,7 +91,7 @@ class theApp:
 
         self.__choices : ft.Row = ft.Row()
         self.__answer_url : ft.TextField = ft.TextField(label="Answer (G)oogle U(R)L",on_submit=self.__save_question_click,width=150)
-        self.__qanda_topic_number : ft.TextField = ft.TextField(label="Topic#",width=90,on_blur=self.__qanda_topic_number_update)
+        # self.__qanda_topic_number : ft.TextField = ft.TextField(label="Topic#",width=90,on_blur=self.__qanda_topic_number_update)
         self.__qanda_number : ft.TextField = ft.TextField(label="QAndA number",width=90,
                                                           on_submit=self.__get_qanda_image,
                                                           on_focus=self.__qanda_number_gotfocus,
@@ -99,11 +101,12 @@ class theApp:
         self.__menu : ft.Row = ft.Row()
         self.__dropdowns : ft.Row = ft.Row()
         self.__waitSignal = ft.ElevatedButton(text="Waiting for something awesome",visible=False,height=200)
-        self.__environmentDropDown : ft.Dropdown = ft.Dropdown(label="Environment",on_change=self.__env_select)
-        self.__subjectDropDown : ft.Dropdown = ft.Dropdown(label="Subject",on_change=self.__subject_select)
+        self.__environmentDropDown : ft.Dropdown = ft.Dropdown(label="Environment",on_change=self.__env_select,width=200)
+        self.__subjectDropDown : ft.Dropdown = ft.Dropdown(label="Subject",on_change=self.__subject_select,width=200)
         self.__topicDropDown : ft.Dropdown = ft.Dropdown(label="Topic",on_change=self.__topic_select)
-        self.__sourceDropDown : ft.Dropdown = ft.Dropdown(label="Source",on_change=self.__source_select)
-        self.__dropdowns.controls = [self.__environmentDropDown, self.__subjectDropDown, self.__topicDropDown, self.__sourceDropDown]
+        self.__sourceDropDown : ft.Dropdown = ft.Dropdown(label="Source",on_change=self.__source_select,width=150)
+        self.__examDropDown : ft.Dropdown = ft.Dropdown(label="Exam",on_change=self.__exam_select,width=200)
+        self.__dropdowns.controls = [self.__environmentDropDown, self.__subjectDropDown, self.__topicDropDown, self.__sourceDropDown,self.__examDropDown]
         self.__previous_question_button = ft.ElevatedButton(text="<",on_click=self.__show_previous_question,tooltip="Previous question")
         self.__next_question_button = ft.ElevatedButton(text=">",on_click=self.__show_next_question,tooltip="Next question")
         self.__InfoBox : ft.Text = ft.Text("Information box")
@@ -221,15 +224,10 @@ class theApp:
     def OpenAlert(self, title):
         dlg : ft.AlertDialog = ft.AlertDialog(title=ft.Text(title))
         self.page.open(dlg)
-        # self.page.dialog = dlg
-        # dlg.open = True
-        # self.page.update()
 
     def __delete_question(self, _):
         if self.__selected_question_id != -1:
-            self.__confirmDelete.open = True
-            self.page.dialog = self.__confirmDelete
-            self.page.update()
+            self.page.open(self.__confirmDelete)
         else:
             self.OpenAlert("Select a question to delete. You're right now on a New question")
     
@@ -267,19 +265,24 @@ class theApp:
             self.__decrease_image_container_heights()
         elif e.control.key == "increase":
             self.__increase_image_container_heights()
-        
+    
     def __qanda_topic_number_update(self, e):
         if self.__selected_subject_id:
             if self.__selected_source_id:
-                qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{self.__qanda_folder_number.value}"
-                ans_file_location = f"{qanda_file_path}/answer-files/{e.control.value}"
-                self.__correctAnwers = CorrectAnswers(ans_file_location)
+                topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+                qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
+                ans_file_location = f"{qanda_file_path}/{e.control.value}/answer-files"
+                if self.__correctAnwers is None:
+                    self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
+                else:
+                    if self.__correctAnwers.TopicTitle != self.TopicTitle:
+                        self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
                 if not self.__correctAnwers.CorrectAnswerFileFound:
                     self.OpenAlert(f"Correct choices file NOT found")
             else:
                 self.OpenAlert("You haven't selected a source")
         else:
-            self.OpenAlert("You haven't selecgted a subject")
+            self.OpenAlert("You haven't selected a subject")
 
     def __close_yesnoprompt_no(self, e):
         self.__yesnoprompt.open = False
@@ -292,9 +295,7 @@ class theApp:
         self.__save_question(self.QuestionType.long)
 
     def __open_yesnoprompt(self):
-        self.__yesnoprompt.open = True
-        self.page.dialog = self.__yesnoprompt
-        self.page.update()
+        self.page.open(self.__yesnoprompt)
 
     def __buildEnvDropDown(self):
         envs = self.__restapi.PCMEnvs
@@ -328,6 +329,15 @@ class theApp:
         self.__topicDropDown.options = options
         self.__topicDropDown.update()
 
+    def __buildExamDropDown(self):
+        options : list = []
+        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        topic_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
+        for exam_dir in listdir(topic_file_path):
+            options.append(ft.dropdown.Option(text=exam_dir))
+        self.__examDropDown.options = options
+        self.__examDropDown.update()
+
     def __open_rearrange_choices_dialog(self, _):
         if len(self.__choices.controls) > 1:
             col_width : int = 40
@@ -336,11 +346,7 @@ class theApp:
             for i in range(int(len(self.__choices.controls)/2)):
                 choice_controls.append(ft.TextField(label=chr(i+65),width=col_width,data=chr(i+65)))
             self.__choices_to_switch_row.controls = choice_controls
-
-
-            self.__rearrange_choices_dialog.open = True
-            self.page.dialog = self.__rearrange_choices_dialog
-            self.page.update()
+            self.page.open(self.__rearrange_choices_dialog)
         else:
             self.__info_box_update("No choices available",False)
 
@@ -382,10 +388,8 @@ class theApp:
                     self.__do_rearrange_choices()
 
     def __open_replace_dialog(self, _):
-        self.__replace_text_prompt.open = True
-        self.page.dialog = self.__replace_text_prompt
         self.__replace_dialog_state = ReplaceDialogState.ISOPEN
-        self.page.update()
+        self.page.oepn(self.__replace_text_prompt)
         self.__find_textbox.focus()
         copyText = getClipboardData()
         self.__find_textbox.value = copyText if copyText else self.__findReplaceHistory.CurrentInFindHistory
@@ -1008,9 +1012,10 @@ class theApp:
     def __set_qanda_info(self,overwrite_question_text=False):
         if self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, chr(self.__choice_counter)):
             self.__info_box_update("Correct options: " + "; ".join(self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)),False)
-        qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{self.__qanda_folder_number.value}"
-        ans_file_location = f"{qanda_file_path}/answer-files/topic{self.__qanda_topic_number.value}/{self.__qanda_number.value}.png"
-        ques_file_location = f"{qanda_file_path}/question-files/topic{self.__qanda_topic_number.value}/{self.__qanda_number.value}.png"
+        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}/{self.__exam_dir}"
+        ans_file_location = f"{qanda_file_path}/answer-files/{self.__qanda_number.value}.png"
+        ques_file_location = f"{qanda_file_path}/question-files/{self.__qanda_number.value}.png"
         if isfile(ans_file_location):
             self.__answerContainer.content.src_base64 = Statics.GetImageString(ans_file_location)
             self.__answerContainer.update()
@@ -1073,6 +1078,7 @@ class theApp:
         for opt in e.control.options:
             if opt.key == e.control.value:
                 self.__questionData.TopicTitle = opt.text
+                self.TopicTitle = opt.text
                 break        
         for subject in self.__subjectsandtopics:
             if subject['id'] == self.__selected_subject_id:
@@ -1091,8 +1097,22 @@ class theApp:
         for opt in e.control.options:
             if opt.key == e.control.value:
                 self.__questionData.SourceTitle = opt.text
-                break        
+                self.__buildExamDropDown()
+                break
         self.__selected_source_id = e.control.value
+    
+    def __exam_select(self, e):
+        self.__exam_dir = e.control.value
+        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
+        ans_file_location = f"{qanda_file_path}/{e.control.value}/answer-files"
+        if self.__correctAnwers is None:
+            self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
+        else:
+            if self.__correctAnwers.TopicTitle != self.TopicTitle:
+                self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
+        if not self.__correctAnwers.CorrectAnswerFileFound:
+            self.OpenAlert(f"Correct choices file NOT found")
 
     def __add_answer(self, _):
         try:
@@ -1313,9 +1333,7 @@ class theApp:
                 # if there aren't any choices, then hide all "choice" buttons
                 for action in [x for x in self.__add_from_url_prompt.actions if x.key == "choices"]:
                     action.visible = len(self.__qc.choices.items()) > 0
-                self.__add_from_url_prompt.open = True
-                self.page.dialog = self.__add_from_url_prompt
-                self.page.update()
+                self.page.open(self.__add_from_url_prompt)
             else:
                 self.OpenAlert(f"Doesn't seem to be a supported URL\n{url}")
         else:
@@ -1438,9 +1456,7 @@ class theApp:
                             prompt += self.__funny_val_choice.BadValue + "\n"
                             prompt += "Do you want to replace it with: " + self.__funny_val_choice.GoodValue + "?"
                             self.__funnyvalueprompt.content.value = prompt
-                            self.page.dialog = self.__funnyvalueprompt
-                            self.__funnyvalueprompt.open = True
-                            self.page.update()
+                            self.page.open(self.__funnyvalueprompt)
                         
                     else:
                         self.OpenAlert(f"Nothing for choice \"{chr(self.__choice_counter)}\" found on clipboard.")
@@ -1449,7 +1465,7 @@ class theApp:
 
     def build(self):
         # application's root control (i.e. "view") containing all other controls
-        textFieldRow : ft.Row = ft.Row([self.__qanda_folder_number,self.__qanda_topic_number,self.__qanda_number,self.__answer_url,self.__marks])
+        textFieldRow : ft.Row = ft.Row([self.__qanda_number,self.__answer_url,self.__marks])
         appendQuestionOptionsRow : ft.Row = ft.Row([ft.ElevatedButton(text="Append to Question",on_click=self.__append_image,key="appendtoquestion"),
                                                      ft.ElevatedButton(text="Undo Append",on_click=self.__undo_append_image,key="undoappendtoquestion")])
         questionImageColumn : ft.Column = ft.Column([appendQuestionOptionsRow,self.__questionContainer])
