@@ -89,7 +89,6 @@ class theApp:
 
         self.__choices : ft.Row = ft.Row()
         self.__answer_url : ft.TextField = ft.TextField(label="Answer (G)oogle U(R)L",on_submit=self.__save_question_click,width=150)
-        self.__qanda_folder_number : ft.TextField = ft.TextField(label="Folder name",width=170)
         self.__qanda_topic_number : ft.TextField = ft.TextField(label="Topic#",width=90,on_blur=self.__qanda_topic_number_update)
         self.__qanda_number : ft.TextField = ft.TextField(label="QAndA number",width=90,
                                                           on_submit=self.__get_qanda_image,
