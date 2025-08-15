@@ -9,7 +9,7 @@ class CorrectAnswers:
         if isfile(f'{ans_file_location}/correct.choices'):
             with open(f'{ans_file_location}/correct.choices', encoding='utf-8') as f:
                 for l in [x.strip() for x in f if x.strip() != '']:
-                    m = rematch('^\s*(\d+?)\.\s*\((.+?)\)$', l)
+                    m = rematch(r'^\s*(\d+?)\.\s*\((.+?)\)$', l)
                     if m:
                         self.__correctanswers[m.groups()[0]] = [x.strip() for x in m.groups()[1].split(",")]
         else:
