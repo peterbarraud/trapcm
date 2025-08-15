@@ -1333,7 +1333,7 @@ class theApp:
             self.OpenAlert("Error with clipboard")
 
     def __add_question_from_url(self, g_url : str):
-        m = research('search\?q=(.+?)&rlz', g_url)
+        m = research(r'search\?q=(.+?)&rlz', g_url)
         txt = unquote(m.groups()[0]).replace('+',' ')
         txt = self.__clean_clipboard_text(txt)
         self.__questionContainer.clean()
@@ -1396,13 +1396,13 @@ class theApp:
                 isTopicSet = self.__correctAnwers != None
                 if txt is not None:
                     if isTopicSet:
-                        txtParts = [t.strip() for t in resplit('\([A-Da-d]\)',txt) if t.strip() != '']
+                        txtParts = [t.strip() for t in resplit(r'\([A-Da-d]\)',txt) if t.strip() != '']
                         if len(txtParts) == 1:
                             txtParts = [t.strip() for t in resplit('\n',txt) if t.strip() != '']
                         self.__funny_val_choice.HasFunnyChoice = False
                         for txtPart in [resub(r'^\(.\)\s+', '', x) for x in txtParts]:  # removing the (a-d) from the front
                             txtPart = self.__clean_clipboard_text(txtPart)
-                            m = research('^(.+?)\s*\(\d{4}.+?\)$',txtPart)
+                            m = research(r'^(.+?)\s*\(\d{4}.+?\)$',txtPart)
                             if m:
                                 self.__funny_val_choice.HasFunnyChoice = True
                                 self.__funny_val_choice.Number = 2*(self.__choice_counter - 65)+1
