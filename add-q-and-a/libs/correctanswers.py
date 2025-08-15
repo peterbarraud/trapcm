@@ -35,6 +35,6 @@ class CorrectAnswers:
 
     def getCorrectOptionByQuestion(self, questionNumber, option_name : str):
         if self.__correctanswers.get(questionNumber, None):
-            return option_name.lower() in self.__correctanswers.get(questionNumber, None)
+            return str(option_name) in self.__correctanswers.get(questionNumber, None)
         else:
             return False
