@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+  <head>
+        <title id="page-title">PCM Test Questions</title>
+        <!-- When moving to build folder, uncomment these lines -->
+          <!-- <script src="index.js" name="prod"></script> -->
+          <!-- <link rel="stylesheet" href="index.css"> -->
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-sm">
+          <h6>Last updated <span class="badge bg-info text-dark">[last-modified]</span></h6>
+        </div>
+        <div class="col-sm">
+          <div class="alert alert-success hide-element" role="alert" id="today-question-counter"></div>
+          <div class="alert alert-success hide-element" role="alert"><span id="test-timer" class="badge bg-success"></span> mins left in test</div>
+        </div>
+        <div class="col-sm hide-element">
+          <div class="dropdown" id="user-stuff">
+            <!-- <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="drop-down-menu-title"></button> -->
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="drop-down-menu-title"></button>
+            <div class="dropdown-menu">
+              <button class="dropdown-item" type="button" ><img src="avatar/daniel-barraud.png" height="75px" alt=""></button>
+              <button class="dropdown-item" type="button" id="user-email"></button>
+              <button class="dropdown-item" type="button" id="user-role"></button>
+            </div>
+          </div>        
+          </div>
+      </div>
+    </div>
+
+    <main class="container col-8 hide-element" id="app-is-old">
+      <div>
+        <div class="bg-body-tertiary p-5 rounded">
+          <div class="jumbotron">
+            <h1 class="display-4">You trapPCM version is outdated</h1>
+            <p class="lead">The traPCM has been updated since the last time you signed in.</p>
+            <hr class="my-4">
+            <p>Click the button below to get the lastest version.</p>
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="#" role="button" id="get-latest-updates">Get latest updates now</a>
+            </p>
+            <p>After getting latest updates, you'll be asked to sign in again.</p>
+          </div>
+        </div>
+      </div>
+    </main>
+    
+    <main class="container col-6">
+      <div id="sign-in">
+        <div class="bg-body-tertiary p-5 rounded">
+          <h1>Sign in</h1>
+          <form>
+            <div class="mb-3">
+              <input type="email" class="form-control" id="email" aria-describedby="emailHelp" autocomplete="on" placeholder="Registered email address">
+              <div id="emailHelp" class="form-text bad-input">Invalid email</div>
+            </div>
+            <div class="mb-3">
+              <input type="password" class="form-control" id="password" autocomplete="on" placeholder="Valid password">
+              <div id="passwordHelp" class="form-text bad-input">Invalid password</div>
+            </div>
+            <button class="btn btn-primary" id="signin">Submit</button>                
+          </form>
+        </div>
+      </div>
+      <!-- what do you want to do today -->
+      <div id="activity-chooser" class="hide-element">
+        <div class="bg-body-tertiary p-5 rounded">
+          <h2>What do you want to do today?</h2>
+          <h3>Questions</h3>
+          <div class="btn-group" role="group" aria-label="tests-group">
+            <button class="btn btn-outline-primary" name="choose-activity" aria-activity-type="questionaire" activity-type="1" test-name="jee" activity-title="Start questions">Do JEE questions</button>
+            <button class="btn btn-outline-primary" name="choose-activity" aria-activity-type="questionaire" activity-type="1" test-name="cbse" activity-title="Start questions">Do CBSE questions</button>
+          </div>
+          <hr>
+          <h3>Look back</h3>
+          <div class="btn-group" role="group" aria-label="other-activity-group">
+            <button class="btn btn-outline-primary" name="choose-activity" aria-activity-type="doubts" activity-type="3" activity-title="Go through doubts">See Doubt Questions</button>
+            <button class="btn btn-outline-primary" name="choose-activity" aria-activity-type="notes" activity-type="4" activity-title="Go through notes">See Notes</button>
+          </div>
+          <hr>
+          <h3>Tests</h3>
+          <div class="accordion" id="testlist">
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#jee-tests" aria-expanded="false" aria-controls="jee-tests">
+                  JEE Tests
+                </button>
+              </h2>
+              <div id="jee-tests" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#testlist">
+                <div class="accordion-body">
+                  <div class="list-group" id="jee-test-list">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="accordion-item">
+              <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#cbse-tests" aria-expanded="false" aria-controls="cbse-tests">
+                  CBSE Tests
+                </button>
+              </h2>
+              <div id="cbse-tests" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#testlist">
+                <div class="accordion-body">
+                  <div class="list-group" id="cbse-test-list">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+
+        </div>
+      </div>
+      <div id="topic-chooser" class="hide-element">
+        <div class="bg-body-tertiary p-5 rounded">
+          <button class="btn btn-success" name="back-to-activity-chooser">Back</button>
+          <h2>Choose your subjects and topics for the test</h2>
+          <button class="btn btn-primary" id="start-activity"></button>
+          <div class="container text-center">
+            <div class="input-group mb-3">
+              <input type="text" class="form-control" placeholder="Type topic name, press Enter to filter; type nothing, press Enter to show everything" aria-label="Topic filter" aria-describedby="basic-addon2" id="topic-filter-text">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="filter-topic-list">Search</button>
+              </div>
+            </div>            
+            <div class="row" id="subjects-row"></div>
+            <div class="row" id="topics-row"></div>
+          </div>
+          <div class="container text-center">
+            <div class="row" id="subjects-row"></div>
+            <div class="row" id="topics-row"></div>
+          </div>
+            
+        </div>
+    </div>
+      <!-- The questionaire -->
+      <div id="the-questionaire" class="hide-element">
+        <div class="bg-body-tertiary p-5 rounded">
+          <div class="container">
+            <div class="row">
+              <div class="col-sm">
+                <button class="btn btn-success" id="back-to-topic-chooser">Back</button>      
+              </div>
+              <div class="col-sm">
+              </div>
+            </div>
+          </div>
+          
+          <ul class="nav nav-tabs" role="tablist">
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" id="question-container" role="tabpanel">
+              <div id="the-question"></div>
+              <ul class="list-group" id="question-choices"></ul>
+              <button type="button" class="btn btn-primary" id="attempt-answer"></button>
+              <button type="button" class="btn btn-primary" name="navigate-question" direction="1">Next</button>
+              <button type="button" class="btn btn-primary" name="navigate-question" direction="-1">Previous</button>
+              <button type="button" class="btn btn-primary" name="answer-details-button">Get answer details</button>
+              <button type="button" class="btn btn-primary" name="manage-doubts"></button>
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-info" id="open-attempted-questions-modal">Show previous questions</button>
+      </div>
+      <!-- The test -->
+      <div id="the-test" class="hide-element">
+        <div class="bg-body-tertiary p-5 rounded">
+          <div class="row">
+            <div class="col-sm">
+              <button class="btn btn-success" name="back-to-activity-chooser">Back</button>      
+            </div>
+            <div class="col-sm">
+            </div>
+          </div>
+          
+          <div class="tab-content container">
+            <div class="row">
+              <div class="col-8" style="border-right:5px solid black;">
+                <div class="tab-pane fade show active" id="test-container" role="tabpanel">
+                  <div class="row">
+                    <div id="the-test-question" class="col-10"></div>
+                    <div class="col"><button name="bookmark-question" type="button" class="btn btn-outline-primary" title="Bookmark this question">&#128204;</button></div>
+                  </div>
+                  
+                  <ul class="list-group" id="test-choices"></ul>
+                  <!-- <button type="button" class="btn btn-primary" name="navigate-question" direction="1">Next</button> -->
+                  <!-- <button type="button" class="btn btn-primary" name="navigate-question" direction="-1">Previous</button> -->
+                  <button type="button" class="btn btn-primary" name="answer-details-button">Get answer details</button>
+                  <button type="button" class="btn btn-primary" name="manage-doubts"></button>
+                  <!-- <button type="button" class="btn btn-primary" name="manage-notes"></button> -->
+                  
+                </div>
+
+              </div>
+              <div class="col">
+                <ul class="nav nav-pills mb-3" role="tablist"></ul>
+                <hr>
+                <div id="question-number-list"></div>
+                <hr>
+                <div><button type="button" class="btn btn-success btn-lg" id="submit-test">Submit Test</button></div>
+              </div>
+              
+
+            </div>
+            
+          </div>                  
+        </div>
+      </div>
+
+
+    </main>
+    <!-- When moving to build folder, comment following line -->
+    <script src="index.js" name="dev"></script>
+  </body>
+</html>
+
+<div class="modal" id="answer-details" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Answer <span id="jee-advanced-display" class="badge bg-success"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p id="answer-description"></p>
+        <a id="answer-url" target="_blank"></a>
+        <a id="no-answer-url" target="_blank">This Answer doesn't have a link</a>
+        <img id="answer-screenshot" width="100%">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="info-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="info-modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="info-modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="start-test-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Test starter</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <table class="table table-bordered">
+          <tbody>
+          </tbody>
+        </table>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="start-test">Start test</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="test-end-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Submit test</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>You still have <span id="time-left"></span> minutes left on your test. Are you sure you want to close now?</p>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="continue-test">Continue test</button>
+        <button type="button" class="btn btn-danger" id="force-submit-test">Submit test</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="attempted-questions-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Attempted questions</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="btn-group" role="group" aria-label="Navigation group">
+          <button type="button" class="btn btn-primary" name="navigate-attempted-question" direction="1">Previous</button>
+          <button type="button" class="btn btn-primary" name="navigate-attempted-question" direction="-1" disabled>Next</button>
+          <button type="button" class="btn btn-primary" name="manage-doubts" location="attempted-questions-modal"></button>
+        </div>
+        <div id="attempted-question-type"></div>
+        <h3>Question</h3>
+        <div id="attempted-question">Getting stuff in a bit</div>
+        <h3>Answer</h3>
+        <div id="attempted-answer"></div>
+        <div class="alert alert-danger invisible" role="alert" id="attempted-questions-err">
+          No other attempted questions to display
+        </div>               
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal" id="save-for-doubt-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Save doubt</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <p>Your question ID is <span id="doubt-question-id"></span></p>
+        <div class="form-floating">
+          <textarea class="form-control" placeholder="Leave a comment here" id="save-for-doubt-description"></textarea>
+          <label for="floatingTextarea">Comments (<i>Optional</i>)</label>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" name="save-for-doubt" doubt-type="ba">I don't understand the answer</button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" name="save-for-doubt" doubt-type="da">I got a different answer</button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="pause-question-modal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Pause question</h5>
+        
+      </div>
+      <div class="modal-body">
+        <p>Your questions is paused for now.</p>
+        <p>Hit restart to go back to the question.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="restart-question" doubt-type="ba">Restart</button>
+      </div>
+    </div>
+  </div>
+</div>

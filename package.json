@@ -1,0 +1,49 @@
+{
+  "name": "rapo-browserify-budo-browserifycss",
+  "version": "1.0.0",
+  "description": "A rapid prototyping project for Browerify+Budo using Browserify-CSS to manage external CSS libs",
+  "main": "entry.js",
+  "scripts": {
+    "start": "budo index.js --live --open --port 9870 -- -g [browserify-css]",
+    "build": "node scripts/build",
+    "testbuild": "budo -d ./build --open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterbarraud/rapo-browserify-budo-browserifycss.git"
+  },
+  "keywords": [
+    "browserify",
+    "budo",
+    "prototyping",
+    "browserify-css",
+    "uglifyify",
+    "html-minifier"
+  ],
+  "author": "@gapeterb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peterbarraud/rapo-browserify-budo-browserifycss/issues"
+  },
+  "homepage": "https://github.com/peterbarraud/rapo-browserify-budo-browserifycss#readme",
+  "devDependencies": {
+    "browserify-css": "^0.13.1",
+    "budo": "^10.0.4",
+    "ftp": "^0.3.10",
+    "html-dist": "^1.0.1",
+    "html-minifier": "^3.5.21",
+    "html-uglify": "^1.2.1",
+    "mkdirp": "^0.5.1",
+    "mysql": "^2.18.1",
+    "rimraf": "^2.6.2",
+    "uglifycss": "0.0.27",
+    "uglifyify": "^4.0.4"
+  },
+  "dependencies": {
+    "bootstrap": "^5.0.1",
+    "domready": "^1.0.8",
+    "jquery": "^3.2.1",
+    "popper.js": "^1.12.9",
+    "tether": "^1.4.1"
+  }
+}

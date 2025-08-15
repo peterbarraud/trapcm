@@ -1,0 +1,14 @@
+([a-zA-Z])(\d+)
+(s|p|d|f)(\d)
+(-1|−1)
+\^\(-1\)
+Statement I
+Statement II
+(\d)(\d)
+(-|−)
+mol(-1|−1)
+(\d\+)
+mol(−1|-1)
+(−|-)(\d)
+˚A
+(Statement I|Statement II)

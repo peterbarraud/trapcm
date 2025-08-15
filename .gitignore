@@ -1,0 +1,15 @@
+node_modules
+build
+the.dr.nefario.backside/mariadb.min/
+the.dr.nefario.backside/php.min/
+__pycache__/
+the.dr.nefario.backside/mdb.running
+question.files/
+create-q-and-a/misc/
+mdb.running
+package-lock.json
+avatar/
+the.dr.nefario.backside/services/error_log
+downloaded-pics/
+the.dr.nefario.backside/services/savequestion.log
+qanda-files/
