@@ -384,7 +384,7 @@ class theApp():
                 # then save the clipboard image (to be appended)
                 fromClipboard.save(f'{folderForSave}tmp2.png')
                 # we are using another lib (cv2), so we need to read these back
-                merged_img = theApp.resize_on_vertical([cv2.imread(f'{folderForSave}tmp1.png'),
+                merged_img = Statics.ResizeOnVertical([cv2.imread(f'{folderForSave}tmp1.png'),
                                                         cv2.imread(f'{folderForSave}tmp2.png')])
                 # we will have to write this back to disc
                 cv2.imwrite(f'{folderForSave}tmp-final.png', merged_img)
@@ -420,25 +420,6 @@ class theApp():
                                                     ft.ElevatedButton(text="Save",on_click=self.__save),
                                                     self.__InfoBox, self.__questionContainer])
         self.page.add(self.__main_container)
-
-
-    # @staticmethod
-    # def resize_on_vertical(img_list, interpolation  
-    #                 = cv2.INTER_CUBIC): 
-    #     # take maximum width 
-    #     w_min = max(img.shape[1]
-    #                 for img in img_list) 
-        
-    #     # resizing images 
-    #     im_list_resize = [cv2.resize(img, 
-    #                     (w_min, int(img.shape[0] * w_min / img.shape[1])), 
-    #                                 interpolation = interpolation) 
-    #                     for img in img_list] 
-    #     # return final image 
-    #     return cv2.vconcat(im_list_resize)            
-
-
-
 
 def main(page: ft.Page):
     page.title = "Make QandA Files"
