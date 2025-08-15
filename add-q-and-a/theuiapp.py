@@ -46,7 +46,7 @@ class theApp:
 
         self.__listings : Listings = Listings()
         
-        self.__choice_counter = 65 # which is A caps
+        self.__choice_counter = 1 # which is A caps
         self.__questionIDTxt : ft.Text = ft.Text(self.__selected_question_id, size=10);
         self.__is_advanced_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is A(d)v", value=False)
         self.__is_fitb_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is FITB",tooltip="Fill-in-the-blanks question", value=False)
@@ -101,8 +101,8 @@ class theApp:
         self.__menu : ft.Row = ft.Row()
         self.__dropdowns : ft.Row = ft.Row()
         self.__waitSignal = ft.ElevatedButton(text="Waiting for something awesome",visible=False,height=200)
-        self.__environmentDropDown : ft.Dropdown = ft.Dropdown(label="Environment",on_change=self.__env_select,width=200)
-        self.__subjectDropDown : ft.Dropdown = ft.Dropdown(label="Subject",on_change=self.__subject_select,width=200)
+        self.__environmentDropDown : ft.Dropdown = ft.Dropdown(label="Env",on_change=self.__env_select,width=100)
+        self.__subjectDropDown : ft.Dropdown = ft.Dropdown(label="Subject",on_change=self.__subject_select,width=130)
         self.__topicDropDown : ft.Dropdown = ft.Dropdown(label="Topic",on_change=self.__topic_select)
         self.__sourceDropDown : ft.Dropdown = ft.Dropdown(label="Source",on_change=self.__source_select,width=150)
         self.__examDropDown : ft.Dropdown = ft.Dropdown(label="Exam",on_change=self.__exam_select,width=200)
@@ -266,23 +266,6 @@ class theApp:
         elif e.control.key == "increase":
             self.__increase_image_container_heights()
     
-    def __qanda_topic_number_update(self, e):
-        if self.__selected_subject_id:
-            if self.__selected_source_id:
-                topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
-                qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
-                ans_file_location = f"{qanda_file_path}/{e.control.value}/answer-files"
-                if self.__correctAnwers is None:
-                    self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
-                else:
-                    if self.__correctAnwers.TopicTitle != self.TopicTitle:
-                        self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
-                if not self.__correctAnwers.CorrectAnswerFileFound:
-                    self.OpenAlert(f"Correct choices file NOT found")
-            else:
-                self.OpenAlert("You haven't selected a source")
-        else:
-            self.OpenAlert("You haven't selected a subject")
 
     def __close_yesnoprompt_no(self, e):
         self.__yesnoprompt.open = False
@@ -331,7 +314,7 @@ class theApp:
 
     def __buildExamDropDown(self):
         options : list = []
-        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        topic_folder_name = Statics.MakeFolderNameNice(self.__questionData.TopicTitle)
         topic_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
         for exam_dir in listdir(topic_file_path):
             options.append(ft.dropdown.Option(text=exam_dir))
@@ -344,7 +327,7 @@ class theApp:
             choice_controls : list = list()
 
             for i in range(int(len(self.__choices.controls)/2)):
-                choice_controls.append(ft.TextField(label=chr(i+65),width=col_width,data=chr(i+65)))
+                choice_controls.append(ft.TextField(label=i,width=col_width,data=1))
             self.__choices_to_switch_row.controls = choice_controls
             self.page.open(self.__rearrange_choices_dialog)
         else:
@@ -361,7 +344,7 @@ class theApp:
         for i in range(1,len(self.__choices.controls),2):
             choiceContainer : ft.Container = self.__choices.controls[i]
             if isinstance(choiceContainer.content,ft.TextField):
-                choice_pos = ord(self.__choices_to_switch_row.controls[j].value.upper())-65
+                choice_pos = ord(self.__choices_to_switch_row.controls[j].value.upper())
                 choiceContainer.content.value = items_for_update[choice_pos].ChoiceValue
                 choiceContainer.content.update()
                 self.__choices.controls[i-1].value = items_for_update[choice_pos].ChoiceState
@@ -469,7 +452,7 @@ class theApp:
                                 if newChoiceText != choiceText:
                                     choiceContainer.content.value = newChoiceText
                                     choiceContainer.update()
-                                    choices_changed[chr(int(i/2)+65)] = f"For choice {chr(int(i/2)+65)} - Replaced: \"{choiceText}\" with \"{choiceContainer.content.value}\""
+                                    choices_changed[int(i/2)] = f"For choice {int(i/2)} - Replaced: \"{choiceText}\" with \"{choiceContainer.content.value}\""
                 if ans_update_msg or choices_changed:
                     # we are only adding to history if the replace actually did something
                     self.__findReplaceHistory.addToFindHistory(replace_what)
@@ -692,7 +675,7 @@ class theApp:
                 self.__answer_url.value = question['answer']["url"]
                 self.__marks.value = question['marks']
                 for choice in question['choices']:
-                    self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=True if choice['correct_ans']=="1" else False ))
+                    self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=True if choice['correct_ans']=="1" else False ))
                     choiceContainer : ft.Container = ft.Container(on_long_press=self.__choice_on_long_press)
                     self.__choice_counter += 1
                     if choice['description']:
@@ -712,7 +695,7 @@ class theApp:
         self.__change_source.visible = self.__change_source.value = False
         # self.__change_source.update()
 
-        self.__choice_counter = 65 # which is A caps
+        self.__choice_counter = 1 # which is A caps
         self.__selected_question_id = -1
         self.__questionIDTxt.value = self.__selected_question_id
         self.__is_advanced_q_checkbox.value = self.__is_fitb_q_checkbox.value = self.__is_mmcq_q_checkbox.value = self.__answer_not_required.value = False
@@ -729,7 +712,7 @@ class theApp:
         self.__reset_question()
  
     def __clear_choices(self, _):
-        self.__choice_counter = 65
+        self.__choice_counter = 1
         self.__choices.clean()
         self.__choices.update()
 
@@ -1010,9 +993,9 @@ class theApp:
             self.OpenAlert("Marks must be with the range 1 - 10")
 
     def __set_qanda_info(self,overwrite_question_text=False):
-        if self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, chr(self.__choice_counter)):
+        if self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter):
             self.__info_box_update("Correct options: " + "; ".join(self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)),False)
-        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        topic_folder_name = Statics.MakeFolderNameNice(self.__questionData.TopicTitle)
         qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}/{self.__exam_dir}"
         ans_file_location = f"{qanda_file_path}/answer-files/{self.__qanda_number.value}.png"
         ques_file_location = f"{qanda_file_path}/question-files/{self.__qanda_number.value}.png"
@@ -1078,8 +1061,7 @@ class theApp:
         for opt in e.control.options:
             if opt.key == e.control.value:
                 self.__questionData.TopicTitle = opt.text
-                self.TopicTitle = opt.text
-                break        
+                break
         for subject in self.__subjectsandtopics:
             if subject['id'] == self.__selected_subject_id:
                 for topic in subject['topics']:
@@ -1103,14 +1085,14 @@ class theApp:
     
     def __exam_select(self, e):
         self.__exam_dir = e.control.value
-        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        topic_folder_name = Statics.MakeFolderNameNice(self.__questionData.TopicTitle)
         qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
         ans_file_location = f"{qanda_file_path}/{e.control.value}/answer-files"
         if self.__correctAnwers is None:
-            self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
+            self.__correctAnwers = CorrectAnswers(ans_file_location, self.__questionData.TopicTitle)
         else:
-            if self.__correctAnwers.TopicTitle != self.TopicTitle:
-                self.__correctAnwers = CorrectAnswers(ans_file_location, self.TopicTitle)
+            if self.__correctAnwers.TopicTitle != self.__questionData.TopicTitle:
+                self.__correctAnwers = CorrectAnswers(ans_file_location, self.__questionData.TopicTitle)
         if not self.__correctAnwers.CorrectAnswerFileFound:
             self.OpenAlert(f"Correct choices file NOT found")
 
@@ -1154,9 +1136,9 @@ class theApp:
             self.__answerContainer.update()
         if AddFromUrl.Choices in e.control.data:
             self.__choices.controls.clear()
-            self.__choice_counter = 65
+            self.__choice_counter = 1
             for choice,is_right in self.__qc.choices.items():
-                self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=is_right))
+                self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=is_right))
                 self.__choice_counter += 1
                 choiceContainer : ft.Container = ft.Container(
                     content=ft.TextField(value=getTextFromSoup(choice)),
@@ -1242,9 +1224,9 @@ class theApp:
                     self.__questionContainer.update()
                     if len(self.__qc.choices.items()) > 0:
                         self.__choices.controls.clear()
-                        self.__choice_counter = 65
+                        self.__choice_counter = 1
                         for choice,is_right in self.__qc.choices.items():
-                            self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=is_right))
+                            self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=is_right))
                             self.__choice_counter += 1
                             choiceContainer : ft.Container = ft.Container(
                                 content=ft.TextField(value=getTextFromSoup(choice),tooltip=getTextFromSoup(choice)),
@@ -1273,9 +1255,9 @@ class theApp:
                 if self.__qc:
                     if len(self.__qc.choices.items()) > 0:
                         self.__choices.controls.clear()
-                        self.__choice_counter = 65
+                        self.__choice_counter = 1
                         for choice,is_right in self.__qc.choices.items():
-                            self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=is_right))
+                            self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=is_right))
                             self.__choice_counter += 1
                             choiceContainer : ft.Container = ft.Container(content=ft.TextField(value=getTextFromSoup(choice)),
                                                 on_long_press=self.__choice_on_long_press,width=120,tooltip=getTextFromSoup(choice))
@@ -1401,7 +1383,7 @@ class theApp:
     def __add_choice(self, _):
         if self.__is_fitb_q_checkbox.value:
             if len(self.__choices.controls) == 0:
-                self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=True))
+                self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=True))
                 self.__choices.controls.append(ft.Container(content=ft.TextField(value=''),on_long_press=self.__choice_on_long_press,width=120))
                 self.page.update()
             else:
@@ -1413,7 +1395,7 @@ class theApp:
                 isTopicSet = self.__correctAnwers != None
                 if txt is not None:
                     if isTopicSet:
-                        txtParts = [t.strip() for t in resplit(r'\([A-Da-d]\)',txt) if t.strip() != '']
+                        txtParts = [t.strip() for t in resplit(r'\([1-4]\)',txt) if t.strip() != '']
                         if len(txtParts) == 1:
                             txtParts = [t.strip() for t in resplit('\n',txt) if t.strip() != '']
                         self.__funny_val_choice.HasFunnyChoice = False
@@ -1422,14 +1404,14 @@ class theApp:
                             m = research(r'^(.+?)\s*\(\d{4}.+?\)$',txtPart)
                             if m:
                                 self.__funny_val_choice.HasFunnyChoice = True
-                                self.__funny_val_choice.Number = 2*(self.__choice_counter - 65)+1
+                                self.__funny_val_choice.Number = 2*(self.__choice_counter - 1)+1
                                 self.__funny_val_choice.BadValue = txtPart
                                 self.__funny_val_choice.GoodValue = m.groups()[0]
-                            check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, chr(self.__choice_counter))
+                            check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter)
                             if check_value:
-                                setClipboardData(f"({chr(self.__choice_counter)}) {txtPart}")
+                                setClipboardData(f"({self.__choice_counter}) {txtPart}")
                                 self.__add_answer(None)
-                            self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=check_value))
+                            self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=check_value))
                             self.__choice_counter += 1
                             choiceContainer : ft.Container = ft.Container(content=ft.TextField(value=txtPart,width=120,tooltip=txtPart),
                                                                         on_long_press=self.__choice_on_long_press)
@@ -1440,8 +1422,8 @@ class theApp:
                 else:
                     img = ImageGrab.grabclipboard()
                     if img is not None:
-                        check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, chr(self.__choice_counter))
-                        self.__choices.controls.append(ft.Checkbox(label=chr(self.__choice_counter),value=check_value))
+                        check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter)
+                        self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=check_value))
                         self.__choice_counter += 1
                         choiceContainer : ft.Container = ft.Container(content=ft.Image(src_base64=Statics.GetImageString(img),fit=ft.ImageFit.FIT_HEIGHT,width=150),
                                                                       on_long_press=self.__choice_on_long_press)
@@ -1452,14 +1434,14 @@ class theApp:
                         self.page.update()
                         Statics.ClearClipboard()
                         if self.__funny_val_choice.HasFunnyChoice:
-                            prompt : str = "We found a funny value in choice: " + chr(self.__funny_val_choice.Number+65) + "\n"
+                            prompt : str = "We found a funny value in choice: " + self.__funny_val_choice.Number + "\n"
                             prompt += self.__funny_val_choice.BadValue + "\n"
                             prompt += "Do you want to replace it with: " + self.__funny_val_choice.GoodValue + "?"
                             self.__funnyvalueprompt.content.value = prompt
                             self.page.open(self.__funnyvalueprompt)
                         
                     else:
-                        self.OpenAlert(f"Nothing for choice \"{chr(self.__choice_counter)}\" found on clipboard.")
+                        self.OpenAlert(f"Nothing for choice \"{self.__choice_counter}\" found on clipboard.")
             except OSError  as osex:
                 self.OpenAlert("Error with clipboard")
 
