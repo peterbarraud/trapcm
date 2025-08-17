@@ -247,9 +247,30 @@
   }
 
 
+  function getallsubjectsandtopics($test_name){
+    require_once('objectlayer/subjectcollection.php');
+    require_once('objectlayer/topiccollection.php');
+    require_once('objectlayer/questioncollection.php');
+    require_once('objectlayer/namevalue.php');
+
+    $attemptedquestions_array = array();
+    $subjects = new subjectcollection();
+    $retval = array();
+    // array that we'll add to the subjects object
+    foreach($subjects->getobjectcollection() as $subject) {
+      $subject->topics = array();
+      $filter = array();
+      array_push($filter, new NameValue('subject_id', '=', $subject->id));
+      array_push($filter, new NameValue('test_name', '=', $test_name));
+      $topics = new topiccollection($filter);
+      $subject->topics = $topics->getobjectcollection();
+      array_push($retval, $subject);
+    }
+    echo json_encode($retval);
+  }
 
 
-  function getallsubjectsandtopics(){
+  function obsolete_getallsubjectsandtopics(){
     require_once('objectlayer/subjectcollection.php');
     require_once('objectlayer/topiccollection.php');
     require_once('objectlayer/questioncollection.php');
