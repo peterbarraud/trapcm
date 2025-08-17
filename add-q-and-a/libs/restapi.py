@@ -30,8 +30,8 @@ class RestApi:
     def NoAnswerAvailableImg(self):
         return self.__config_json['noansavailableimg']
 
-    def getSubjectsAndTopics(self, restapiurl : str):
-        response = get(f"{restapiurl}getallsubjectsandtopics")
+    def getSubjectsAndTopics(self, restapiurl : str,testName):
+        response = get(f"{restapiurl}getallsubjectsandtopics/{testName}")
         return response.json()
 
     def getQuestionSources(self, restapiurl : str):
