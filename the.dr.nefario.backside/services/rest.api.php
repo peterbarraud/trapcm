@@ -262,7 +262,7 @@
       $filter = array();
       array_push($filter, new NameValue('subject_id', '=', $subject->id));
       array_push($filter, new NameValue('test_name', '=', $test_name));
-      $topics = new topiccollection($filter);
+      $topics = new topiccollection($filter,"title");
       $subject->topics = $topics->getobjectcollection();
       array_push($retval, $subject);
     }
