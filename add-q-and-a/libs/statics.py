@@ -71,5 +71,7 @@ class Statics:
         topic_folder_name = topic_name.lower()
         topic_folder_name = resub(r'\s*(,|&)\s*','_',topic_folder_name)
         topic_folder_name = resub(r'\s*\((H|h|V|v)\)\s*$','',topic_folder_name)
+        topic_folder_name = resub(r'\s*(\s*\(\s*|\s*\)\s*)\s*','_',topic_folder_name)
         topic_folder_name = topic_folder_name.replace(' ','_')
+        topic_folder_name = topic_folder_name.strip("_")
         return topic_folder_name
