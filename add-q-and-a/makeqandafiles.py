@@ -62,19 +62,19 @@ class theApp():
             ft.dropdown.Option(i)
             topicItems.append(ft.dropdown.Option(i))
 
-        self.__topicNumber : ft.TextField = ft.TextField(label="Topic#",width=100)
+        self.__examNumber : ft.TextField = ft.TextField(label="Exam",width=100)
         page.on_keyboard_event = self.__on_keyboard
         
-        self.__menu : ft.Row = ft.Row([self.__QandA_group,self.__topicNumber,self.__QandA_file_number])
+        self.__menu : ft.Row = ft.Row([self.__QandA_group,self.__examNumber,self.__QandA_file_number])
         self.__dropdowns : ft.Row = ft.Row()
 
-        self.__environmentDropDown : ft.Dropdown = ft.Dropdown(label="Environment",on_change=self.__env_select)
-        self.__subjectDropDown : ft.Dropdown = ft.Dropdown(label="Subject",on_change=self.__subject_select)
+        self.__envDropDownDropDown : ft.Dropdown = ft.Dropdown(label="Env",on_change=self.__env_select,width=110)
+        self.__subjectDropDown : ft.Dropdown = ft.Dropdown(label="Subject",on_change=self.__subject_select,width=130)
         self.__topicDropDown : ft.Dropdown = ft.Dropdown(label="Topic",on_change=self.__topic_select)
-        self.__sourceDropDown : ft.Dropdown = ft.Dropdown(label="Source",on_change=self.__source_select)
+        self.__sourceDropDown : ft.Dropdown = ft.Dropdown(label="Source",on_change=self.__source_select,width=150)
 
 
-        self.__dropdowns.controls = [self.__environmentDropDown, self.__subjectDropDown, self.__topicDropDown, self.__sourceDropDown]
+        self.__dropdowns.controls = [self.__envDropDownDropDown]
         self.__InfoBox : ft.Text = ft.Text("Information box")
 
 
@@ -145,32 +145,37 @@ class theApp():
         options : list = []
         for i, v in envs.items():
             options.append(ft.dropdown.Option(key=v,text=i))
-        self.__environmentDropDown.options = options
+        self.__envDropDownDropDown.options = options
 
     def __buildSourcesDropDown(self):
-        options : list = []
+        self.__sourceDropDown.options.clear()
         for source in self.__restapi.getQuestionSources(self.__selected_restapi_url):
-            options.append(ft.dropdown.Option(text=source['title'],key=source['id']))
-        self.__sourceDropDown.options = options
-        self.__sourceDropDown.update()
+            self.__sourceDropDown.options.append(ft.dropdown.Option(text=source['title'],key=source['id']))
+        self.__sourceDropDown.visible = True
+        self.__dropdowns.controls.append(self.__sourceDropDown)
+        self.__dropdowns.update()
+
+    def __buildSubjectDropDown(self):
+        self.__subjectDropDown.options.clear()
+        self.__subjectsandtopics = self.__restapi.getSubjectsAndTopics(self.__selected_restapi_url,self.SourceTitle)
+        for subject in self.__subjectsandtopics:
+            self.__subjectDropDown.options.append(ft.dropdown.Option(text=subject['title'],key=subject['id']))
+        self.__subjectDropDown.visible = True
+        # self.__dropdowns.controls.append(self.__subjectDropDown)
+        self.__dropdowns.update()
 
     def __buildTopicDropDown(self):
-        options : list = []
+        self.__topicDropDown.options.clear()
         for subject in self.__subjectsandtopics:
             if subject['id'] == self.__selected_subject_id:
                 for topic in subject['topics']:
                     if (topic_title := Statics.GetTopicTitle(topic)) is not None:
-                        options.append(ft.dropdown.Option(text=topic_title,key=topic['id']))
+                        self.__topicDropDown.options.append(ft.dropdown.Option(text=topic_title,key=topic['id']))
                 break
-        self.__topicDropDown.options = options
-        self.__topicDropDown.update()
+        self.__topicDropDown.visible = True
+        self.__dropdowns.controls.append(self.__topicDropDown)
+        self.__dropdowns.update()
 
-    def __buildSubjectDropDown(self):
-        options : list = []
-        for subject in self.__subjectsandtopics:
-            options.append(ft.dropdown.Option(text=subject['title'],key=subject['id']))
-        self.__subjectDropDown.options = options
-        self.__subjectDropDown.update()
 
     def __QandA_file_number_focus(self, e):
         self.__QandA_file_number_is_focus = True
@@ -214,7 +219,7 @@ class theApp():
                 self.OpenAlert("You haven't selected a Question Source")
                 allGood = False
         if allGood:
-            if self.__topicNumber.value:
+            if self.__examNumber.value:
                     allGood = True
             else:
                 self.OpenAlert("You haven't specified an QandA folder number")
@@ -255,13 +260,19 @@ class theApp():
                     self.OpenAlert(f"Folder doesn't exist: {parentFolder}")
 
     def __getQandAFolderLocation(self):
-        for src_opt in self.__sourceDropDown.options:
-            if src_opt.key == self.__selected_source_id:
-                for sub_opt in self.__subjectDropDown.options:
-                    if sub_opt.key == self.__selected_subject_id:
-                        qanda_folder_name = f"{self.__QandA_group.value}-files"
-                        topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
-                        return f"{self.__restapi.QandAFilesRoot}/{src_opt.text.lower()}/{sub_opt.text.lower()}/{topic_folder_name}/{self.__topicNumber.value}/{qanda_folder_name}/"
+        return f"{self.__restapi.QandAFilesRoot}/{self.SourceTitle.lower()}/{self.__examNumber.value.lower()}/{self.SubjectTitle.lower()}/{Statics.MakeFolderNameNice(self.TopicTitle)}/{self.__QandA_group.value}-files/"
+        
+        # topic_folder_name = 
+        # self.SourceTitle    
+        
+        
+        # for src_opt in self.__sourceDropDown.options:
+        #     if src_opt.key == self.__selected_source_id:
+        #         for sub_opt in self.__subjectDropDown.options:
+        #             if sub_opt.key == self.__selected_subject_id:
+        #                 qanda_folder_name = f"{self.__QandA_group.value}-files"
+        #                 topic_folder_name = Statics.MakeFolderNameNice(self.TopicTitle)
+        #                 return f"{self.__restapi.QandAFilesRoot}/{src_opt.text.lower()}/{sub_opt.text.lower()}/{topic_folder_name}/{self.__examNumber.value}/{qanda_folder_name}/"
 
     # we're going to create the folder if it doesn't exist
     # but only the answer-files/question-files or topic# folder
@@ -312,31 +323,41 @@ class theApp():
         self.__InfoBox.update()
 
     def __env_select(self, e):
-        # clear out subject and topic lists and selected values
-        self.__subjectDropDown.clean()
-        self.__sourceDropDown.clean()
+        # self.__examDropDown.visible = False
+        self.__subjectDropDown.visible = False
+        self.__topicDropDown.visible = False
+        self.__sourceDropDown.visible = False
         self.__selected_subject_id = None
-        
+        # self.__selected_topic_id = None
         self.__selected_restapi_url = e.control.value
         try:
-            self.__subjectsandtopics = self.__restapi.getSubjectsAndTopics(self.__selected_restapi_url)
-            self.__buildSubjectDropDown()
             # also let's get the question types for the selected env
             self.QuestionType = Enum('QuestionType', self.__restapi.getQuestionTypes(self.__selected_restapi_url))
             self.__buildSourcesDropDown()
-        except:
-            self.OpenAlert("Couldn't hit this server")
+        except Exception as err:
+            self.OpenAlert(f"{err}")
+
+    def __source_select(self, e):
+        self.__selected_source_id = e.control.value
+        for opt in e.control.options:
+            if opt.key == e.control.value:
+                self.SourceTitle = opt.text
+                break
+        self.__subjectDropDown.options.clear()
+        self.__buildSubjectDropDown()
+        self.__subjectDropDown.visible = True
+        # self.__dropdowns.controls.append(self.__examDropDown)
+        self.__dropdowns.controls.append(self.__subjectDropDown)
+        self.__dropdowns.update()
 
     def __subject_select(self, e):
         self.__selected_subject_id = e.control.value
         for opt in e.control.options:
             if opt.key == e.control.value:
-                # self.__questionData.SubjectTitle = opt.text
+                self.SubjectTitle = opt.text
                 self.__buildTopicDropDown()
-                break        
+                break
 
-    def __source_select(self, e):
-        self.__selected_source_id = e.control.value
 
     def __topic_select(self, e):
         # self.__selected_topic_id = e.control.value
