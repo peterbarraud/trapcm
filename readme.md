@@ -21,4 +21,17 @@ pip install beautifulsoup4
 Should run fine
 
 6. Create a folder for your QandA files
+6. Put the folder (top-level) in this file
+`add-q-and-a\libs\config.json` at `qandaFilesRoot`
 
+The qanda folder structure is as follows:
+`qandaFilesRoot/<source - jee or bits>/<exam_dir>/<subject>/`
+
+Answer files:
+`qandaFilesRoot/<source - jee or bits>/<exam_dir>/<subject>/answer-files`
+
+Question files:
+`qandaFilesRoot/<source - jee or bits>/<exam_dir>/<subject>/question-files`
+
+Correct choices file location
+`qandaFilesRoot/<source - jee or bits>/<exam_dir>/<subject>/<topic>/correct.choices`
