@@ -450,10 +450,3 @@ def main(page: ft.Page):
 
 
 ft.app(target=main)
-
-# def main(page: ft.Page):
-#     page.title = "Make QandA Files App"
-#     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-#     page.add(theApp(page))
-
-# ft.app(target=main)
