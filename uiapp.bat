@@ -1,1 +1,1 @@
-python .\add-q-and-a\theuiapp-v2.py
+python .\add-q-and-a\theuiapp.py
