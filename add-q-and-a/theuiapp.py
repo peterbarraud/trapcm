@@ -983,7 +983,7 @@ class theApp:
         if self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter):
             self.__info_box_update("Correct options: " + "; ".join(self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)),False)
         topic_folder_name = Statics.MakeFolderNameNice(self.__questionData.TopicTitle)
-        qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}/{self.__exam_dir}"
+        qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__exam_dir}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
         ans_file_location = f"{qanda_file_path}/answer-files/{self.__qanda_number.value}.png"
         ques_file_location = f"{qanda_file_path}/question-files/{self.__qanda_number.value}.png"
         if isfile(ans_file_location):
