@@ -1412,7 +1412,7 @@ class theApp:
                             check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter)
                             if check_value:
                                 setClipboardData(f"({self.__choice_counter}) {txtPart}")
-                                self.__add_answer(None)
+                                # self.__add_answer(None)
                             self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=check_value))
                             self.__choice_counter += 1
                             choiceContainer : ft.Container = ft.Container(content=ft.TextField(value=txtPart,width=120,tooltip=txtPart),
