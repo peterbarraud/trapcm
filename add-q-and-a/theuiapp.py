@@ -359,7 +359,7 @@ class theApp:
 
     def __open_replace_dialog(self, _):
         self.__replace_dialog_state = ReplaceDialogState.ISOPEN
-        self.page.oepn(self.__replace_text_prompt)
+        self.page.open(self.__replace_text_prompt)
         self.__find_textbox.focus()
         copyText = getClipboardData()
         self.__find_textbox.value = copyText if copyText else self.__findReplaceHistory.CurrentInFindHistory
@@ -453,7 +453,7 @@ class theApp:
                     if ans_update_msg:
                         msgs.append(ans_update_msg)
                     if choices_changed:
-                        msgs.append("Choices changed: " + ";".join(choices_changed.keys()))
+                        msgs.append("Choices changed: " + ";".join([str(c) for c in choices_changed.keys()]))
                         for choice, msg in choices_changed.items():
                             msgs.append(f"Choice changed: {choice} for {msg}")
                     self.__findreplace_info_update("\n".join(msgs), MsgType.INFO)
