@@ -1409,7 +1409,10 @@ class theApp:
                                 self.__funny_val_choice.Number = 2*(self.__choice_counter - 1)+1
                                 self.__funny_val_choice.BadValue = txtPart
                                 self.__funny_val_choice.GoodValue = m.groups()[0]
-                            check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter)
+                            if len(txtParts) == 1:
+                                check_value = True
+                            else:
+                                check_value : bool = self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter)
                             if check_value:
                                 setClipboardData(f"({self.__choice_counter}) {txtPart}")
                                 # self.__add_answer(None)
