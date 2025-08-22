@@ -604,7 +604,7 @@ class theApp:
         self.__menu.controls.append(ft.ElevatedButton(text="Q&Cs",on_click=self.__get_question_and_choices,tooltip="Get Question&Choices from URL"))
         self.__menu.controls.append(ft.ElevatedButton(text="(S)ave",on_click=self.__save_question_click,tooltip="Save question"))
         self.__menu.controls.append(ft.ElevatedButton(text="Cls Cs",on_click=self.__clear_choices,tooltip="Clear all Choices"))
-        self.__menu.controls.append(ft.ElevatedButton(text="CCs",on_click=self.__copy_choices,tooltip="Copy all Choices to clipboard"))
+        self.__menu.controls.append(ft.ElevatedButton(text="Cp Cs",on_click=self.__copy_choices,tooltip="Copy all Choices to clipboard"))
         self.__menu.controls.append(ft.ElevatedButton(text="Toggle DDs",on_click=self.__toggle_dropdowns,key="show",tooltip="Toggle Drop-downs"))
         self.__menu.controls.append(ft.ElevatedButton(text="+Q",on_click=self.__add_question,tooltip="Add Question from Image"))
         self.__menu.controls.append(ft.ElevatedButton(text="Get from URL",on_click=self.__open_details_prompt,tooltip="Get All from URL"))
