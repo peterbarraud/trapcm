@@ -49,7 +49,7 @@ class theApp:
         self.__choice_counter = 1 # which is A caps
         self.__questionIDTxt : ft.Text = ft.Text(self.__selected_question_id, size=10);
         self.__is_advanced_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is A(d)v", value=False)
-        self.__is_fitb_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is FITB",tooltip="Fill-in-the-blanks question", value=False)
+        self.__is_fitb_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is FITB",tooltip="Fill-in-the-blanks question", value=False, on_change=self.__add_fitb_value)
         self.__is_mmcq_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is MMCQ",tooltip="Is this MMCQ question", value=False)
         self.__answer_not_required : ft.Checkbox = ft.Checkbox(label="Ans Not Req",tooltip="Answer not required", value=False)
         self.__change_topic : ft.Checkbox = ft.Checkbox(label="Change topic", value=False,visible=False)
@@ -865,17 +865,22 @@ class theApp:
 
     # check that at least one choice is selected as correct
 
-    def __check_multiple_choice(self):
-        choice_counter = 0
+    def __check_choices(self):
+        correct_choice_counter = 0
         for i, ctrl in enumerate(self.__choices.controls):
             if type(ctrl) == ft.Checkbox:
                 if ctrl.value:
-                    choice_counter += 1
-        if choice_counter > 1 or self.__is_mmcq_q_checkbox.value == True:
-            return self.QuestionType.mmcq
+                    correct_choice_counter += 1
+        if correct_choice_counter == 0:
+            return False
         else:
-            if choice_counter == 1:
-                return self.QuestionType.mcq
+            if correct_choice_counter == 1:
+                if self.__is_fitb_q_checkbox.value:
+                    return self.QuestionType.fitb
+                else:
+                    return self.QuestionType.mcq
+            elif correct_choice_counter > 1 or self.__is_mmcq_q_checkbox.value == True:
+                return self.QuestionType.mmcq
             else:
                 return False
 
@@ -956,11 +961,8 @@ class theApp:
             if len(self.__choices.controls) == 0:
                 # prompt to save as long-form
                 self.__open_yesnoprompt()
-            elif len(self.__choices.controls) == 2:
-                # save as fitb
-                self.__save_question(self.QuestionType.fitb)
             else:
-                choice_check = self.__check_multiple_choice()
+                choice_check = self.__check_choices()
                 if not choice_check:
                     self.OpenAlert("You haven't selected any choices as correct. Please select at least one.")
                 else:
@@ -1351,6 +1353,10 @@ class theApp:
         # txt = txt.replace('\uf044','&Delta;')
         txt = resub(r'\s+(\)|\])',r'\1',txt)
         return txt
+    
+    def __add_fitb_value(self, e):
+        if e.data == 'true':
+            self.__add_choice(None)
 
     def __add_question(self, _):
         try:
@@ -1386,8 +1392,9 @@ class theApp:
     def __add_choice(self, _):
         if self.__is_fitb_q_checkbox.value:
             if len(self.__choices.controls) == 0:
+                fitb_correct_answer : str = self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)[0]
                 self.__choices.controls.append(ft.Checkbox(label=self.__choice_counter,value=True))
-                self.__choices.controls.append(ft.Container(content=ft.TextField(value=''),on_long_press=self.__choice_on_long_press,width=120))
+                self.__choices.controls.append(ft.Container(content=ft.TextField(value=fitb_correct_answer),on_long_press=self.__choice_on_long_press,width=120))
                 self.page.update()
             else:
                 self.OpenAlert("For FITB questions, you can only add a single option.\nIf this is an MCQ, uncheck 'Is FITB'")
