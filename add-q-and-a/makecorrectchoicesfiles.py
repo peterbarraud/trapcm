@@ -3,7 +3,7 @@ from os.path import isdir
 from libs.statics import Statics
 
 def main(folder_name):
-    with open(r'D:\tech-stuff\trapcm\qanda-files\jee\2025-jan\maths\all-choices.txt') as f:
+    with open(f'{start_folder}/all-choices.txt') as f:
         lines = [l.strip() for l in f if l.strip() != '']
         i = 0
         while True:
@@ -33,6 +33,6 @@ def main(folder_name):
 
 if __name__ == "__main__":
     # we will need to specify the folder in which the qanda files have been made for this exam
-    start_folder = r'D:\tech-stuff\trapcm\qanda-files\jee\2025-jan\maths'
+    start_folder = r'D:\tech-stuff\trapcm\qanda-files\jee\2025-jan\chemistry'
     main(start_folder)
     print("All DONE")
