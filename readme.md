@@ -37,12 +37,15 @@ Correct choices file location
 `qandaFilesRoot/<source - jee or bits>/<exam_dir>/<subject>/<topic>/correct.choices`
 
 ## How to And QandA to TraPCM
-### How to make the QandA files
+### Download PDF and use iLovePDF
 1. Download the PYQ PDF (mathongo is here: https://www.mathongo.com/iit-jee/jee-main-chapter-wise-questions-with-solutions)
 1. Put the PDF here: `/trapcm/qanda-files/raw-data/mathongo/<subject>/<year>`
 1. Use https://www.ilovepdf.com/ to covert the PDF to JPG files (one page for each file)
 1. Create a folder, based on the exam inside the folder you created in step 2 above.
 For example, for the April JEE exam, you can create a folder `apr`. Exact folder name is unimportant, just a convenient normenclature will help.
+1. To make the names of the JPG files, use /trapcm/add-q-and-a/shorten-download-jpg-names.py
+
+### How to make the QandA files
 5. Run: `trapcm/makeqandafiles.bat`
 * **env**: engg
 * **source**: jee/bits/(any other exam)
@@ -53,9 +56,9 @@ This field is important, because this is where the UIApp picks the QandA from fo
 
 *__Also, important: If the exam folder doesn't exist, we create it__*
 
-6. After creating the QandA files, you'll need to create correct.choices files
-1. Open `MS Paint`
-1. Open the folder contain the files created by ilovepdf - `Step 2` above
+6. Open `MS Paint`
+1. Open the folder containing the JPG files created by ilovepdf - `Step 2` above
+1. Also, open the PDF - the JPG file numbers are the same as the page Nos. on the PDF
 1. Do the Make QandA file stuff
 
 ### How to create the correct choices file
@@ -72,6 +75,7 @@ Gravitation
 ```
 2. Add this location here: `/trapcm/add-q-and-a/makecorrectchoicesfiles.py`
 1. Run the script and, *hopefull*, you should have the correct answer files in each of the topic folders
+
 Important: This script does *NOT* create any folder. So, if we don't find a folder, we'll just error out
 
 ### How to add the QandA to TraPCM
