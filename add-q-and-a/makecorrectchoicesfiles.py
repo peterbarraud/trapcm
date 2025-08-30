@@ -27,11 +27,12 @@ def main(folder_name):
                     if isfile(correct_answer_file_full_path):
                         print(f"Correct answer file already exists. We DON'T overwrite {correct_answer_file_full_path}:")
                     else:
-                        correct_answer_file = open(f"{topic_folder_name}/correct.choices",'w')
+                        correct_answer_file = open(correct_answer_file_full_path,'w')
                         correct_answer_file.write("\n".join(correct_answer_list))
                         correct_answer_file.close()
+                        print(f"{topic_folder_name}/correct.choices")
                 else:
-                    print(f"topic folder not found: {topic_folder_name}")
+                    print(f"DONE: {correct_answer_file_full_path}")
                     break
 
 
