@@ -698,7 +698,8 @@ class theApp:
         else:
             self.OpenAlert("You haven't selected an Environment to run in")
 
-    def __reset_question(self):
+    # keep_questiion_number is for allowing the increment of question numbers as we progress through a chapter
+    def __reset_question(self,keep_questiion_number=False):
         # re-init question
         self.__change_topic.visible = self.__change_topic.value = False
         # self.__change_topic.update()
@@ -714,7 +715,8 @@ class theApp:
         self.__answerContainer.content = ft.Image(src_base64=self.__restapi.AnswerPlacehoderImg,fit=ft.ImageFit.CONTAIN,width=self.__imageDim.Width,height=self.__imageDim.Height)
         self.__choices.clean()
         self.__answer_url.value = ''
-        self.__qanda_number.value = ''
+        if not keep_questiion_number:
+            self.__qanda_number.value = ''
         # self.__info_box_update(None, False)
         self.page.update()
 
@@ -884,8 +886,10 @@ class theApp:
                 self.__info_box_update(f"Updated Question ID: {questionID}",False)
             else:
                 self.__info_box_update(f"New Question ID: {questionID}",False)
-            self.__reset_question()
+            self.__reset_question(keep_questiion_number=True)
+            self.__qanda_number.value = int(self.__qanda_number.value) + 1
             self.__qanda_number.focus()
+
 
     # check that at least one choice is selected as correct
 
@@ -1120,8 +1124,8 @@ class theApp:
                 self.__correctAnwers = CorrectAnswers(topic_folder, self.__questionData.TopicTitle)
         if not self.__correctAnwers.CorrectAnswerFileFound:
             self.OpenAlert(f"Correct choices file NOT found\nChecking in this location: {topic_folder}")
-
-
+        self.__qanda_number.value = 1
+        self.__qanda_number.update()
         self.__dropdowns.update()
 
     
