@@ -127,6 +127,19 @@ class theApp:
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
         )
 
+        self.__isfitbprompt = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Please confirm"),
+            content=ft.Text("Seems that this may be an FITB. Yes?"),
+            actions=[
+                ft.TextButton("Yes", on_click=self.__close_fitb_yes),
+                ft.TextButton("No", on_click=self.__close_fitb_no),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+            on_dismiss=lambda e: print("Modal dialog dismissed!"),
+        )
+
+
 
         self.__funnyvalueprompt = ft.AlertDialog(
             modal=False,
@@ -279,6 +292,16 @@ class theApp:
 
     def __open_yesnoprompt(self):
         self.page.open(self.__yesnoprompt)
+
+    def __close_fitb_yes(self, e):
+        self.__isfitbprompt.open = False
+        self.__is_fitb_q_checkbox.value = True
+        self.__add_choice(None)
+        self.page.update()
+
+    def __close_fitb_no(self, _):
+        self.__isfitbprompt.open = False
+        self.page.update()
 
     def __buildEnvDropDown(self):
         envs = self.__restapi.PCMEnvs
@@ -982,7 +1005,10 @@ class theApp:
             self.OpenAlert("Marks must be with the range 1 - 10")
 
     def __set_qanda_info(self,overwrite_question_text=False):
-        self.__info_box_update("Correct options: " + "; ".join(self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)),False)
+        correct_answers : list = self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)
+        if len(correct_answers) == 1 and int(correct_answers[0]) > 4:
+            self.page.open(self.__isfitbprompt)
+        self.__info_box_update("Correct options: " + "; ".join(correct_answers),False)
         # if self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter):
         #     self.__info_box_update("Correct options: " + "; ".join(self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)),False)
         topic_folder_name = Statics.MakeFolderNameNice(self.__questionData.TopicTitle)
