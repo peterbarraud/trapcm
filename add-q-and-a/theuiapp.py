@@ -885,6 +885,7 @@ class theApp:
             else:
                 self.__info_box_update(f"New Question ID: {questionID}",False)
             self.__reset_question()
+            self.__qanda_number.focus()
 
     # check that at least one choice is selected as correct
 
