@@ -24,7 +24,6 @@ class CorrectAnswers:
         return self.__topic_title
 
     def getCorrectOptionNames(self, questionNumber):
-        print(self.__correctanswers.get(str(questionNumber)))
         retval : list = list()
         for correctOption in self.__correctanswers.get(str(questionNumber), []):
             retval.append(correctOption)
