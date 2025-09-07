@@ -297,10 +297,12 @@ class theApp:
         self.__isfitbprompt.open = False
         self.__is_fitb_q_checkbox.value = True
         self.__add_choice(None)
+        self.__answer_url.focus()
         self.page.update()
 
     def __close_fitb_no(self, _):
         self.__isfitbprompt.open = False
+        self.__answer_url.focus()
         self.page.update()
 
     def __buildEnvDropDown(self):
@@ -1011,11 +1013,7 @@ class theApp:
 
     def __set_qanda_info(self,overwrite_question_text=False):
         correct_answers : list = self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)
-        if len(correct_answers) == 1 and int(correct_answers[0]) > 4:
-            self.page.open(self.__isfitbprompt)
         self.__info_box_update("Correct options: " + "; ".join(correct_answers),False)
-        # if self.__correctAnwers.getCorrectOptionByQuestion(self.__qanda_number.value, self.__choice_counter):
-        #     self.__info_box_update("Correct options: " + "; ".join(self.__correctAnwers.getCorrectOptionNames(self.__qanda_number.value)),False)
         topic_folder_name = Statics.MakeFolderNameNice(self.__questionData.TopicTitle)
         qanda_file_path = f"{self.__restapi.QandAFilesRoot}/{self.__questionData.SourceTitle.lower()}/{self.__exam_dir}/{self.__questionData.SubjectTitle.lower()}/{topic_folder_name}"
         ans_file_location = f"{qanda_file_path}/answer-files/{self.__qanda_number.value}.png"
@@ -1038,9 +1036,13 @@ class theApp:
                                                             fit=ft.ImageFit.CONTAIN,width=self.__imageDim.Width,
                                                             height=self.__imageDim.Height)
             self.__questionContainer.update()
-            self.__answer_url.focus()
         else:
             self.__info_box_update(f"Question File not found at: {self.__qanda_number.value}.png")
+        if len(correct_answers) == 1 and int(correct_answers[0]) > 4:
+            self.page.open(self.__isfitbprompt)
+        else:
+            self.__answer_url.focus()
+
 
     def __get_qanda_image(self, _):
         self.__set_qanda_info()
