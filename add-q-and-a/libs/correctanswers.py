@@ -24,13 +24,11 @@ class CorrectAnswers:
         return self.__topic_title
 
     def getCorrectOptionNames(self, questionNumber):
-        if self.__correctanswers.get(questionNumber, None):
-            retval : list = list()
-            for correctOption in self.__correctanswers.get(questionNumber, None):
-                retval.append(correctOption)
-            return retval
-        else:
-            return False
+        print(self.__correctanswers.get(str(questionNumber)))
+        retval : list = list()
+        for correctOption in self.__correctanswers.get(str(questionNumber), []):
+            retval.append(correctOption)
+        return retval
 
 
     def getCorrectOptionByQuestion(self, questionNumber, option_name : str):
@@ -38,3 +36,7 @@ class CorrectAnswers:
             return str(option_name) in self.__correctanswers.get(questionNumber, None)
         else:
             return False
+
+
+if __name__ == "__main__":
+    print("This is a library. You should be running theuiapp")
