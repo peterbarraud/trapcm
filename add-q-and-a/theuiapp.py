@@ -534,7 +534,7 @@ class theApp:
         elif e.key == 'D':
             self.__is_advanced_q_checkbox.value = not self.__is_advanced_q_checkbox.value
             self.__is_advanced_q_checkbox.update()
-        elif e.key == 'P':
+        elif e.key == 'E':
             self.__add_choice(None)
         elif e.key == '-':
             self.__decrease_image_container_heights()
@@ -623,7 +623,7 @@ class theApp:
     def __buildAppMenu(self):
         self.__menu.controls.append(self.__previous_question_button)
         self.__menu.controls.append(self.__next_question_button)
-        self.__menu.controls.append(ft.ElevatedButton(text="+C(P)",on_click=self.__add_choice,tooltip="Add Choice from Image/Text"))
+        self.__menu.controls.append(ft.ElevatedButton(text="+C(E)",on_click=self.__add_choice,tooltip="Add Choice from Image/Text"))
         self.__menu.controls.append(ft.ElevatedButton(text="+(Q)",on_click=self.__add_question,tooltip="Add Question from Image/Text"))
         self.__menu.controls.append(ft.ElevatedButton(text="+A",on_click=self.__add_answer,tooltip="Add Answer from Image"))
         self.__menu.controls.append(ft.ElevatedButton(text="(N)ew",on_click=self.__new_question,tooltip="Reset all of question"))
