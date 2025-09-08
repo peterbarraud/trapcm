@@ -51,7 +51,6 @@ class theApp:
         self.__is_advanced_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is A(d)v", value=False)
         self.__is_fitb_q_checkbox : ft.Checkbox = ft.Checkbox(label="(F)ITB",tooltip="Fill-in-the-blanks question", value=False, on_change=self.__add_fitb_value)
         self.__is_mmcq_q_checkbox : ft.Checkbox = ft.Checkbox(label="MMCQ",tooltip="Is this MMCQ question", value=False)
-        self.__answer_not_required : ft.Checkbox = ft.Checkbox(label="Ans Not Req",tooltip="Answer not required", value=False)
         self.__change_topic : ft.Checkbox = ft.Checkbox(label="Change topic", value=False,visible=False)
         self.__change_source : ft.Checkbox = ft.Checkbox(label="Change source", value=False,visible=False)
         self.__funny_val_choice : FunnyValueChoice = FunnyValueChoice()
@@ -64,7 +63,6 @@ class theApp:
                                               self.__is_advanced_q_checkbox,self.__change_topic,
                                               self.__is_fitb_q_checkbox,
                                               self.__is_mmcq_q_checkbox,
-                                              self.__answer_not_required,
                                               self.__change_source,
                                               ft.ElevatedButton(text="Cls Cs",on_click=self.__clear_choices,tooltip="Clear all Choices"),
                                               ft.ElevatedButton("-",on_click=self.__change_image_container_heights,
@@ -526,9 +524,6 @@ class theApp:
             self.__open_replace_dialog(None)
         elif e.key == 'N':
             self.__reset_question()
-        elif e.key == 'O':
-            self.__answer_not_required.value = not self.__answer_not_required.value
-            self.__answer_not_required.update()
         elif e.key == 'T':
             self.__toggle_dropdowns(None)
         elif e.key == 'D':
@@ -714,7 +709,7 @@ class theApp:
         self.__choice_counter = 1 # which is A caps
         self.__selected_question_id = -1
         self.__questionIDTxt.value = self.__selected_question_id
-        self.__is_advanced_q_checkbox.value = self.__is_fitb_q_checkbox.value = self.__is_mmcq_q_checkbox.value = self.__answer_not_required.value = False
+        self.__is_advanced_q_checkbox.value = self.__is_fitb_q_checkbox.value = self.__is_mmcq_q_checkbox.value = False
         Statics.ClearClipboard()
         self.__questionContainer.content = ft.Image(src_base64=self.__restapi.QuestionPlacehoderImg,fit=ft.ImageFit.CONTAIN,width=self.__imageDim.Width,height=self.__imageDim.Height)
         self.__answerContainer.content = ft.Image(src_base64=self.__restapi.AnswerPlacehoderImg,fit=ft.ImageFit.CONTAIN,width=self.__imageDim.Width,height=self.__imageDim.Height)
@@ -958,16 +953,15 @@ class theApp:
                     self.OpenAlert("You haven't added a question text or image")
                     allGood = False
         if allGood:
-            if self.__answer_not_required.value == False:
-                if isinstance(self.__answerContainer.content,ft.TextField):
-                    if self.__answerContainer.content.value != "" and self.__answerContainer.content.value is not None:
-                        allGood = True
-                elif isinstance(self.__answerContainer.content,ft.Image):
-                    if self.__answerContainer.content.src_base64 != self.__restapi.AnswerPlacehoderImg:
-                        allGood = True
-                    else:
-                        self.OpenAlert("You haven't added an answer text or image.\nIf you don't want to add and answer, check Ans Not Req.")
-                        allGood = False
+            if isinstance(self.__answerContainer.content,ft.TextField):
+                if self.__answerContainer.content.value != "" and self.__answerContainer.content.value is not None:
+                    allGood = True
+            elif isinstance(self.__answerContainer.content,ft.Image):
+                if self.__answerContainer.content.src_base64 != self.__restapi.AnswerPlacehoderImg:
+                    allGood = True
+                else:
+                    self.OpenAlert("You haven't added an answer text or image.")
+                    allGood = False
         if allGood:
             if self.__answer_url.value.strip():
                 googleDomain : str = 'https://www.google.com/'
