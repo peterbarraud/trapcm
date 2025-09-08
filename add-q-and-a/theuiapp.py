@@ -49,8 +49,8 @@ class theApp:
         self.__choice_counter = 1 # which is A caps
         self.__questionIDTxt : ft.Text = ft.Text(self.__selected_question_id, size=10);
         self.__is_advanced_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is A(d)v", value=False)
-        self.__is_fitb_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is FITB",tooltip="Fill-in-the-blanks question", value=False, on_change=self.__add_fitb_value)
-        self.__is_mmcq_q_checkbox : ft.Checkbox = ft.Checkbox(label="Is MMCQ",tooltip="Is this MMCQ question", value=False)
+        self.__is_fitb_q_checkbox : ft.Checkbox = ft.Checkbox(label="(F)ITB",tooltip="Fill-in-the-blanks question", value=False, on_change=self.__add_fitb_value)
+        self.__is_mmcq_q_checkbox : ft.Checkbox = ft.Checkbox(label="MMCQ",tooltip="Is this MMCQ question", value=False)
         self.__answer_not_required : ft.Checkbox = ft.Checkbox(label="Ans Not Req",tooltip="Answer not required", value=False)
         self.__change_topic : ft.Checkbox = ft.Checkbox(label="Change topic", value=False,visible=False)
         self.__change_source : ft.Checkbox = ft.Checkbox(label="Change source", value=False,visible=False)
@@ -544,6 +544,9 @@ class theApp:
             # self.__increase_image_container_heights()
         elif e.key == 'Q':
             self.__add_question(None)
+        elif e.key == 'F':
+            self.__is_fitb_q_checkbox.value = True
+            self.__add_choice(None)
         elif e.key == "W":
             self.__open_rearrange_choices_dialog(None)
         elif e.key in ['G','R']:
