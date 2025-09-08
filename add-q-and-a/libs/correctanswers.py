@@ -31,10 +31,7 @@ class CorrectAnswers:
 
 
     def getCorrectOptionByQuestion(self, questionNumber, option_name : str):
-        if self.__correctanswers.get(questionNumber, None):
-            return str(option_name) in self.__correctanswers.get(questionNumber, None)
-        else:
-            return False
+        return str(option_name) in self.__correctanswers.get(str(questionNumber), False)
 
 
 if __name__ == "__main__":
