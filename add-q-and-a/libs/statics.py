@@ -80,7 +80,6 @@ class Statics:
     def MakeClipboadIntoFractions(clipboardConentArray : list):
         # first check there are 
         # first making sure all entries are integers
-        print(all([a for a in clipboardConentArray if a.lstrip('-+').isdigit()]))
         if len(clipboardConentArray) == len([a for a in clipboardConentArray if a.lstrip('-+').isdigit()]):
             new_text_parts : list = []
             for i in range(4):
