@@ -1437,6 +1437,8 @@ class theApp:
                         txtParts = [t.strip() for t in resplit(r'\([1-4]\)',txt) if t.strip() != '']
                         if len(txtParts) == 1:
                             txtParts = [t.strip() for t in resplit('\n',txt) if t.strip() != '']
+                        if len(txtParts) == 8:
+                            txtParts = Statics.MakeClipboadIntoFractions(txtParts)
                         self.__funny_val_choice.HasFunnyChoice = False
                         for txtPart in [resub(r'^\(.\)\s+', '', x) for x in txtParts]:  # removing the (a-d) from the front
                             txtPart = self.__clean_clipboard_text(txtPart)

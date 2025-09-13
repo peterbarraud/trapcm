@@ -75,3 +75,16 @@ class Statics:
         topic_folder_name = topic_folder_name.replace(' ','_')
         topic_folder_name = topic_folder_name.strip("_")
         return topic_folder_name
+
+    @staticmethod
+    def MakeClipboadIntoFractions(clipboardConentArray : list):
+        # first check there are 
+        # first making sure all entries are integers
+        print(all([a for a in clipboardConentArray if a.lstrip('-+').isdigit()]))
+        if len(clipboardConentArray) == len([a for a in clipboardConentArray if a.lstrip('-+').isdigit()]):
+            new_text_parts : list = []
+            for i in range(4):
+                new_text_parts.append(f"{clipboardConentArray.pop(0)}/{clipboardConentArray.pop(0)}")
+            return new_text_parts
+        else:
+            return clipboardConentArray
