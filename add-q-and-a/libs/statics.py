@@ -81,6 +81,7 @@ class Statics:
         # first check there are 
         # first making sure all entries are integers
         if len(clipboardConentArray) == len([a for a in clipboardConentArray if a.lstrip('-+').isdigit()]):
+            # then add the pairs to numerator/demoninator
             new_text_parts : list = []
             for i in range(4):
                 new_text_parts.append(f"{clipboardConentArray.pop(0)}/{clipboardConentArray.pop(0)}")
