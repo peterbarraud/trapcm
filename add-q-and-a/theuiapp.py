@@ -113,13 +113,13 @@ class theApp:
         self.__buildAppMenu()
         self.__buildEnvDropDown()
 
-        self.__yesnoprompt = ft.AlertDialog(
+        self.__addchoicesprompt = ft.AlertDialog(
             modal=True,
             title=ft.Text("Please confirm"),
-            content=ft.Text("You haven't added any choices. Click Yes to save as Long form. Click No to add choices."),
+            content=ft.Text("You haven't added any choices. Put the choices on your clipboard then come back here and click Yes to add the choices."),
             actions=[
-                ft.TextButton("Yes", on_click=self.__close_yesnoprompt_yes),
-                ft.TextButton("No", on_click=self.__close_yesnoprompt_no),
+                ft.TextButton("Yes", on_click=self.__close_addchoicesprompt_yes),
+                ft.TextButton("Cancel", on_click=self.__close_addchoicesprompt_cancel),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
@@ -278,18 +278,17 @@ class theApp:
             self.__increase_image_container_heights()
     
 
-    def __close_yesnoprompt_no(self, e):
-        self.__yesnoprompt.open = False
+    def __close_addchoicesprompt_cancel(self, e):
+        self.__addchoicesprompt.open = False
         self.page.update()
 
-    def __close_yesnoprompt_yes(self, _):
-        self.__yesnoprompt.open = False
+    def __close_addchoicesprompt_yes(self, _):
+        self.__addchoicesprompt.open = False
         self.page.update()
-        # save as long form
-        self.__save_question(self.QuestionType.long)
+        self.__add_choice(None)
 
-    def __open_yesnoprompt(self):
-        self.page.open(self.__yesnoprompt)
+    def __open__addchoicesprompt(self):
+        self.page.open(self.__addchoicesprompt)
 
     def __close_fitb_yes(self, e):
         self.__isfitbprompt.open = False
@@ -987,7 +986,7 @@ class theApp:
         if allGood:
             if len(self.__choices.controls) == 0:
                 # prompt to save as long-form
-                self.__open_yesnoprompt()
+                self.__open__addchoicesprompt()
             else:
                 choice_check = self.__check_choices()
                 if not choice_check:
