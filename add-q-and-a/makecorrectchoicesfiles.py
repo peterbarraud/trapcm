@@ -31,15 +31,18 @@ def main(folder_name):
                         correct_answer_file.write("\n".join(correct_answer_list))
                         correct_answer_file.close()
                         print(f"{topic_folder_name}/correct.choices")
-                else:
                     print(f"DONE: {correct_answer_file_full_path}")
-                    break
+                else:
+                    print(f"Folder not found: {correct_answer_file_full_path}")
+                    i += 1
+            else:
+                i += 1
 
 
 
 
 if __name__ == "__main__":
     # we will need to specify the folder in which the qanda files have been made for this exam
-    start_folder = r'D:\tech-stuff\trapcm\qanda-files\jee\2025-jan\physics'
+    start_folder = r'D:\tech-stuff\trapcm\qanda-files\jee\2025-jan\maths'
     main(start_folder)
     print("All DONE")
