@@ -1,8 +1,4 @@
-# from typing import Any, List, Optional, Union
 import flet as ft
-# from flet_core.control import Control, OptionalNumber
-# from flet_core.ref import Ref
-# from flet_core.types import AnimationValue, OffsetValue, ResponsiveNumber, RotateValue, ScaleValue
 from PIL import ImageGrab, Image
 from os.path import isfile
 from os import listdir
@@ -10,7 +6,7 @@ import cv2
 from re import sub as resub, findall, split as resplit, error as reerror, search as research
 import collections
 from urllib.parse import unquote
-from glob import glob
+from urllib.parse import quote_plus
 
 from libs.restapi import RestApi
 from libs.clipboardtext import getClipboardData, setClipboardData
@@ -120,6 +116,18 @@ class theApp:
             actions=[
                 ft.TextButton("Yes", on_click=self.__close_addchoicesprompt_yes),
                 ft.TextButton("Cancel", on_click=self.__close_addchoicesprompt_cancel),
+            ],
+            actions_alignment=ft.MainAxisAlignment.END,
+            on_dismiss=lambda e: print("Modal dialog dismissed!"),
+        )
+        
+        self.__makeanswerulrprompt = ft.AlertDialog(
+            modal=True,
+            title=ft.Text("Please confirm"),
+            content=ft.Text("Your answer URL doesn't seem to be a google search URL. Do you want to convert into a google search URL?"),
+            actions=[
+                ft.TextButton("Yes", on_click=self.__close_makeanswerulrprompt_yes),
+                ft.TextButton("No", on_click=self.__close_makeanswerulrprompt_no),
             ],
             actions_alignment=ft.MainAxisAlignment.END,
             on_dismiss=lambda e: print("Modal dialog dismissed!"),
@@ -284,12 +292,20 @@ class theApp:
 
     def __close_addchoicesprompt_yes(self, _):
         self.__addchoicesprompt.open = False
-        self.page.update()
         self.__add_choice(None)
+        self.page.update()
 
-    def __open__addchoicesprompt(self):
+    def __close_makeanswerulrprompt_yes(self, e):
+        self.__makeanswerulrprompt.open = False
+        self.__answer_url.value = f"https://www.google.com/search?q={quote_plus(self.__answer_url.value)}"
         self.page.open(self.__addchoicesprompt)
+        self.page.update()
+        print("make URL prompt")
 
+    def __close_makeanswerulrprompt_no(self, _):
+        self.__makeanswerulrprompt.open = False
+        self.page.update()
+        
     def __close_fitb_yes(self, e):
         self.__isfitbprompt.open = False
         self.__is_fitb_q_checkbox.value = True
@@ -965,7 +981,8 @@ class theApp:
             if self.__answer_url.value.strip():
                 googleDomain : str = 'https://www.google.com/'
                 if self.__answer_url.value[:len(googleDomain)] != googleDomain:
-                    self.OpenAlert("Your answer URL doesn't seem to be a google search URL.")
+                    # self.OpenAlert("Your answer URL doesn't seem to be a google search URL.")
+                    self.page.open(self.__makeanswerulrprompt)
                     allGood = False
                 else:
                     if len(findall(googleDomain, self.__answer_url.value)) != 1:
@@ -985,8 +1002,8 @@ class theApp:
                     allGood = False
         if allGood:
             if len(self.__choices.controls) == 0:
-                # prompt to save as long-form
-                self.__open__addchoicesprompt()
+                # ask user to put choices on clipboard and then come back here
+                self.page.open(self.__addchoicesprompt)
             else:
                 choice_check = self.__check_choices()
                 if not choice_check:
